@@ -38,13 +38,16 @@ Follow these additional instructions to [deploy Grafana operator in a restricted
 The grafana-serviceaccount service account was created alongside the Grafana instance.  We will grant it the cluster-monitoring-view cluster role.
 
 ```
+
+
 oc adm policy add-cluster-role-to-user cluster-monitoring-view -z grafana-serviceaccount
+oc adm policy add-cluster-role-to-user view -z grafana-serviceaccount
 ```
 
 The bearer token for this service account is used to authenticate access to Prometheus in the openshift-monitoring namespace.  The following command will display this token.
 
 ```
-oc serviceaccounts get-token grafana-serviceaccount -n my-grafana
+ oc create token grafana-serviceaccount -n openshift-user-workload-monitoring --duration=8760h
 ```
 
 From the Grafana Data Source resource, press Create Instance, and navigate to the YAML view.  Create the [example GrafanaDataSource], substituting `${BEARER_TOKEN}` with the output of the command above.
